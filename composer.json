@@ -1,0 +1,42 @@
+{
+    "name": "touta/nasc-di",
+    "description": "Dependency injection container with explicit, inspectable wiring for the Touta PHP ecosystem",
+    "type": "library",
+    "license": "MIT",
+    "repositories": [
+        {"type": "vcs", "url": "https://github.com/toutaio/aria-runtime-php"}
+    ],
+    "require": {
+        "php": "^8.3",
+        "touta/aria-runtime-php": "dev-main"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.0",
+        "pestphp/pest": "^3.0",
+        "phpstan/phpstan": "^2.0",
+        "phpstan/phpstan-strict-rules": "^2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Touta\\Nasc\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Touta\\Nasc\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "./vendor/bin/pest",
+        "analyse": "./vendor/bin/phpstan analyse",
+        "lint": "./vendor/bin/php-cs-fixer fix --dry-run --diff",
+        "lint:fix": "./vendor/bin/php-cs-fixer fix",
+        "qa": ["@lint", "@analyse", "@test"]
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {"pestphp/pest-plugin": true}
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
