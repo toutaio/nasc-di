@@ -1,0 +1,16 @@
+aru:
+  address: container.binding.resolve.Service
+  file: src/Container.php
+  layer: L2_MOLECULE
+  description: Immutable DI container with explicit wiring using branded types and domain errors
+  tests:
+    - tests/ContainerTest.php
+  scenarios:
+    - resolve a bound factory via ServiceId
+    - resolve returns ContainerError failure for unbound ServiceId
+    - resolve different bindings independently via ServiceId
+    - later binding overwrites earlier binding for same ServiceId
+    - non-singleton binding creates new instance on each resolve
+    - singleton binding returns same instance on each resolve
+    - has checks binding existence via ServiceId
+    - container is immutable — bind returns a new container

@@ -6,7 +6,6 @@ namespace Touta\Nasc;
 
 use Touta\Aria\Runtime\Failure;
 use Touta\Aria\Runtime\Result;
-use Touta\Aria\Runtime\StructuredFailure;
 use Touta\Aria\Runtime\Success;
 
 final class Container
@@ -40,14 +39,15 @@ final class Container
     /**
      * @param callable(): mixed $factory
      */
-    public function bind(string $id, callable $factory): self
+    public function bind(ServiceId $id, callable $factory): self
     {
+        $key = $id->value;
         $factories = $this->factories;
-        $factories[$id] = $factory;
+        $factories[$key] = $factory;
         $singletons = $this->singletons;
-        unset($singletons[$id]);
+        unset($singletons[$key]);
         $resolved = $this->resolved;
-        unset($resolved[$id]);
+        unset($resolved[$key]);
 
         return new self($factories, $singletons, $resolved);
     }
@@ -55,46 +55,49 @@ final class Container
     /**
      * @param callable(): mixed $factory
      */
-    public function singleton(string $id, callable $factory): self
+    public function singleton(ServiceId $id, callable $factory): self
     {
+        $key = $id->value;
         $factories = $this->factories;
-        $factories[$id] = $factory;
+        $factories[$key] = $factory;
         $singletons = $this->singletons;
-        $singletons[$id] = true;
+        $singletons[$key] = true;
         $resolved = $this->resolved;
-        unset($resolved[$id]);
+        unset($resolved[$key]);
 
         return new self($factories, $singletons, $resolved);
     }
 
     /**
-     * @return Success<mixed>|Failure<StructuredFailure>
+     * @return Success<mixed>|Failure<ContainerError>
      */
-    public function resolve(string $id): Result
+    public function resolve(ServiceId $id): Result
     {
-        if (!isset($this->factories[$id])) {
-            return Failure::from(new StructuredFailure(
-                'BINDING_NOT_FOUND',
-                "No binding registered for \"{$id}\"",
-                ['id' => $id],
+        $key = $id->value;
+
+        if (!isset($this->factories[$key])) {
+            return Failure::from(new ContainerError(
+                ContainerError::NOT_FOUND,
+                "No binding registered for \"{$key}\"",
+                ['id' => $key],
             ));
         }
 
-        if (isset($this->singletons[$id]) && array_key_exists($id, $this->resolved)) {
-            return Success::of($this->resolved[$id]);
+        if (isset($this->singletons[$key]) && array_key_exists($key, $this->resolved)) {
+            return Success::of($this->resolved[$key]);
         }
 
-        $value = ($this->factories[$id])();
+        $value = ($this->factories[$key])();
 
-        if (isset($this->singletons[$id])) {
-            $this->resolved[$id] = $value;
+        if (isset($this->singletons[$key])) {
+            $this->resolved[$key] = $value;
         }
 
         return Success::of($value);
     }
 
-    public function has(string $id): bool
+    public function has(ServiceId $id): bool
     {
-        return isset($this->factories[$id]);
+        return isset($this->factories[$id->value]);
     }
 }

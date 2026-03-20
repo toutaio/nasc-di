@@ -1,0 +1,13 @@
+aru:
+  address: container.ContainerError
+  file: src/ContainerError.php
+  layer: L0_PRIMITIVE
+  description: Domain-typed error for container operations replacing StructuredFailure
+  tests:
+    - tests/ContainerErrorTest.php
+  scenarios:
+    - domain error holds code and message
+    - domain error holds context
+    - withMessage returns new instance with updated message
+    - withContext merges additional context
+    - error constants have correct values

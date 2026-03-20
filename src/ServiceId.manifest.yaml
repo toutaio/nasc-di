@@ -1,0 +1,11 @@
+aru:
+  address: container.ServiceId
+  file: src/ServiceId.php
+  layer: L0_PRIMITIVE
+  description: Branded type wrapping a service identifier string
+  tests:
+    - tests/ServiceIdTest.php
+  scenarios:
+    - branded type wraps a service identifier string
+    - branded type preserves identity equality
+    - branded type distinguishes different identifiers

@@ -1,0 +1,11 @@
+aru:
+  address: container.BindingKey
+  file: src/BindingKey.php
+  layer: L0_PRIMITIVE
+  description: Branded type wrapping a binding key string
+  tests:
+    - tests/BindingKeyTest.php
+  scenarios:
+    - branded type wraps a binding key string
+    - branded type preserves identity equality
+    - branded type distinguishes different keys
